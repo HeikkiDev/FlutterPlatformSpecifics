@@ -30,7 +30,17 @@ public class MainActivity extends FlutterActivity {
                   } else {
                     result.error("UNAVAILABLE", "Cannot open system settings.", null);
                   }
-                } else {
+                }
+                else if (call.method.equals("openDefaultMailApp")) {
+                  boolean openOk = openDefaultMailApp();
+
+                  if (openOk) {
+                    result.success(openOk);
+                  } else {
+                    result.error("UNAVAILABLE", "Cannot open mail app.", null);
+                  }
+                }
+                else {
                   result.notImplemented();
                 }
               }
@@ -40,6 +50,18 @@ public class MainActivity extends FlutterActivity {
   private boolean openSystemSettings() {
     try {
       startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+      return true;
+    }
+    catch (Exception ex){
+      return false;
+    }
+  }
+
+  private boolean openDefaultMailApp() {
+    try {
+      Intent intent = new Intent(Intent.ACTION_MAIN);
+      intent.addCategory(Intent.CATEGORY_APP_EMAIL);
+      startActivity(intent);
       return true;
     }
     catch (Exception ex){
