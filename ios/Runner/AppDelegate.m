@@ -21,7 +21,19 @@
             } else {
                 result(@(opneOk));
             }
-        } else {
+        }
+        else if ([@"openDefaultMailApp" isEqualToString:call.method]) {
+            bool opneOk = [self openDefaultMailApp];
+            
+            if (opneOk == false) {
+                result([FlutterError errorWithCode:@"UNAVAILABLE"
+                                           message:@"Cannot open mail app."
+                                           details:nil]);
+            } else {
+                result(@(opneOk));
+            }
+        }
+        else {
             result(FlutterMethodNotImplemented);
         }
     }];
@@ -33,6 +45,23 @@
     @try {
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
         return true;
+    }
+    @catch (NSException *exception) {
+        NSLog(@"%@", exception.reason);
+        return false;
+    }
+}
+
+- (bool)openDefaultMailApp {
+    @try {
+        NSURL* mailURL = [NSURL URLWithString:@"message://"];
+        if ([[UIApplication sharedApplication] canOpenURL:mailURL]) {
+            [[UIApplication sharedApplication] openURL:mailURL];
+            return true;
+        }
+        else{
+            return false;
+        }
     }
     @catch (NSException *exception) {
         NSLog(@"%@", exception.reason);
