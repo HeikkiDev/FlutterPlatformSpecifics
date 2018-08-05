@@ -121,8 +121,16 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  openDefaultMailApp(){
-
+  openDefaultMailApp()async {
+    try {
+      final bool result = await platform.invokeMethod('openDefaultMailApp');
+      if(result != true){
+        //TODO: Mostrar toast de error o algo
+      }
+    }
+    on PlatformException catch (e) {
+      print("Error en openDefaultMailApp: " + e.message);
+    }
   }
 
 }
